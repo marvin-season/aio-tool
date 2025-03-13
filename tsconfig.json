@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "declaration": true,        // 生成类型声明文件
+    "declaration": true,
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
