@@ -9,6 +9,8 @@ jobs:
     name: Deploy API to GitHub Pages
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write  # 允许 GitHub Actions 直接推送到 gh-pages
 
     steps:
       - name: Checkout Repository
