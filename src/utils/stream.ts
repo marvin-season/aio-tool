@@ -7,8 +7,6 @@ export async function* SSEMessageGenerator<T>(stream: ReadableStream) {
     if (!stream) {
         return;
     }
-    // @ts-ignore ReadableStream is not iterable in typescript
-    // for await (const chunk of stream) {}
     let rest_str = "";
     const reader = stream.getReader();
     while (true) {
@@ -50,4 +48,9 @@ export function createMockStream(data: string) {
             controller.close(); // 结束流
         },
     });
+}
+
+
+export function logger(...value: any){
+    console.log(value);
 }
