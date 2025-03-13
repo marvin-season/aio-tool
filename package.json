@@ -15,10 +15,12 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "clean": "npx tsc --build --clean",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "docs": "typedoc --entryPoints src --out docs"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
+    "typedoc": "^0.27.9",
     "typescript": "^5.8.2"
   }
 }
