@@ -6,6 +6,13 @@ export function sum(a: number, b: number) {
     return a + b;
 }
 
+/**
+ *
+ * @param options {IntersectionObserverInit}
+ * @param onIntersecting if some target is intersecting
+ * @param targets target list
+ * @param callback raw callback of IntersectionObserver
+ */
 export function createIntersectionObserver({
     options,
     onIntersecting,
