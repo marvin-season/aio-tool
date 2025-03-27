@@ -54,3 +54,36 @@ export function createMockStream(data: string) {
 export function logger(...value: any){
     console.log(value);
 }
+
+/**
+ * @beta
+ */
+export function parseThinkContent(input: string): {content: string, think_content: string} {
+    // Check if there is a closed <think> tag
+    const closedPattern = /<think>([\s\S]*?)<\/think>/;
+    const closedMatch = input.match(closedPattern);
+    if (closedMatch) {
+        // Extract think content and remove the <think> block from input to get remaining content.
+        const thinkContent = closedMatch[1];
+        const content = input.replace(closedPattern, '').trim();
+        return {
+            content: content,
+            think_content: thinkContent
+        };
+    } else {
+        // If not a properly closed tag, check for an opening <think> tag
+        const openPattern = /<think>([\s\S]*)/;
+        const openMatch = input.match(openPattern);
+        if (openMatch) {
+            return {
+                content: "",
+                think_content: openMatch[1].trim()
+            };
+        }
+        // When no <think> tag is present, return the whole string as content.
+        return {
+            content: input.trim(),
+            think_content: ""
+        };
+    }
+}
