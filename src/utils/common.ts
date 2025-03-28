@@ -15,13 +15,13 @@ export function sum(a: number, b: number) {
  * @param callback raw callback of IntersectionObserver
  */
 export function createIntersectionObserver({
-                                               options,
-                                               onIntersecting,
-                                               onDisIntersecting,
-                                               targets = [],
-                                               callback
-                                           }: {
-    options: IntersectionObserverInit;
+   rootInit,
+   onIntersecting,
+   onDisIntersecting,
+   targets = [],
+   callback
+}: {
+    rootInit: IntersectionObserverInit;
     targets: HTMLElement[];
     onIntersecting?: (entries: IntersectionObserverEntry[]) => void;
     onDisIntersecting?: (entries: IntersectionObserverEntry[]) => void;
@@ -37,11 +37,15 @@ export function createIntersectionObserver({
                 disIntersectionEntries.push(entry);
             }
         })
-        
-        onIntersecting?.(intersectionEntries);
-        onDisIntersecting?.(disIntersectionEntries);
+
+        if (intersectionEntries.length > 0) {
+            onIntersecting?.(intersectionEntries);
+        }
+        if (disIntersectionEntries.length > 0) {
+            onDisIntersecting?.(disIntersectionEntries);
+        }
         callback && callback(entries, observer);
-    }, options);
+    }, rootInit);
 
     targets.forEach((target) => {
         observer.observe(target);
