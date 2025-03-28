@@ -10,27 +10,36 @@ export function sum(a: number, b: number) {
  *
  * @param options {IntersectionObserverInit}
  * @param onIntersecting if some target is intersecting
+ * @param onDisIntersecting if some target is hiding
  * @param targets target list
  * @param callback raw callback of IntersectionObserver
  */
 export function createIntersectionObserver({
-    options,
-    onIntersecting,
-    targets = [],
-    callback
-}: {
+                                               options,
+                                               onIntersecting,
+                                               onDisIntersecting,
+                                               targets = [],
+                                               callback
+                                           }: {
     options: IntersectionObserverInit;
     targets: HTMLElement[];
-    onIntersecting: (entries: IntersectionObserverEntry[]) => void;
+    onIntersecting?: (entries: IntersectionObserverEntry[]) => void;
+    onDisIntersecting?: (entries: IntersectionObserverEntry[]) => void;
     callback?: IntersectionObserverCallback
 }) {
     const observer = new IntersectionObserver((entries) => {
-        const intersectionObserverEntries = entries.filter(
-            (item) => item.isIntersecting,
-        );
-        if (intersectionObserverEntries.length > 0) {
-            onIntersecting(intersectionObserverEntries);
-        }
+        const intersectionEntries: IntersectionObserverEntry[] = [];
+        const disIntersectionEntries: IntersectionObserverEntry[] = [];
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                intersectionEntries.push(entry);
+            } else {
+                disIntersectionEntries.push(entry);
+            }
+        })
+        
+        onIntersecting?.(intersectionEntries);
+        onDisIntersecting?.(disIntersectionEntries);
         callback && callback(entries, observer);
     }, options);
 
