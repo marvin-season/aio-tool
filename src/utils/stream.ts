@@ -1,16 +1,16 @@
-import {sleep} from "@/utils/common";
+import { sleep } from "@/utils/common";
 
 export const textDecoder = new TextDecoder();
 export const textEncoder = new TextEncoder();
 
-export async function* SSEMessageGenerator<T>(stream: ReadableStream) {
+export async function* SSEMessageGenerator<T extends ArrayBuffer = ArrayBuffer>(stream: ReadableStream<T>) {
     if (!stream) {
         return;
     }
     let rest_str = "";
     const reader = stream.getReader();
     while (true) {
-        const {done, value} = await reader.read();
+        const { done, value } = await reader.read();
         if (done) {
             break;
         }
@@ -33,17 +33,18 @@ export async function* SSEMessageGenerator<T>(stream: ReadableStream) {
 }
 
 // 创建一个符合 SSE 格式的 ReadableStream
-export function createMockStream(data: string) {
+export function createMockStream<R = { id: number, text: string }>(input: string, regx = /\s+/) {
+    if (!input) {
+        throw new Error("input is empty");
+    }
     const id = Date.now();
-    return new ReadableStream({
+    return new ReadableStream<R>({
         async start(controller) {
-            for (const chunk of data.split(/\s+/)) {
-                const line = `data: ${JSON.stringify({
+            for (const chunk of input.split(regx)) {
+                controller.enqueue({
                     id,
                     text: chunk + " ",
-                })}`;
-                controller.enqueue(textEncoder.encode(line));
-                await sleep(50);
+                } as R);
             }
             controller.close(); // 结束流
         },
@@ -51,14 +52,14 @@ export function createMockStream(data: string) {
 }
 
 
-export function logger(...value: any){
+export function logger(...value: any) {
     console.log(value);
 }
 
 /**
  * @beta
  */
-export function parseThinkContent(input: string): {content: string, think_content: string} {
+export function parseThinkContent(input: string): { content: string, think_content: string } {
     // Check if there is a closed <think> tag
     const closedPattern = /<think>([\s\S]*?)<\/think>/;
     const closedMatch = input.match(closedPattern);
