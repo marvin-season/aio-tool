@@ -31,7 +31,7 @@ test("SSEMessageGenerator", async () => {
         value: chunk + " ",
       }),
   });
-  for await (const element of SSEMessageGenerator(stream)) {
-    console.log(element);
-  }
+  const generator = SSEMessageGenerator(stream);
+
+  Array.fromAsync(generator, console.log);
 });
